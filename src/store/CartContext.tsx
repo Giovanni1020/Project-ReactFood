@@ -11,6 +11,7 @@ type CartContextType = {
   items: ItemContext[];
   addItem: (item: ItemContext) => void;
   removeItem: (id: number) => void;
+  clearCart: () => void;
 };
 
 const CartContext = createContext<CartContextType>({
@@ -24,6 +25,7 @@ const CartContext = createContext<CartContextType>({
   ],
   addItem: () => {},
   removeItem: () => {},
+  clearCart: () => {},
 });
 
 function cartReducer(
@@ -77,6 +79,10 @@ function cartReducer(
     }
   }
 
+  if (action.type === 'clear-cart') {
+    return { ...state, items: [] };
+  }
+
   return state;
 }
 
@@ -86,6 +92,7 @@ const initialState: InitialStateType = {
   type: '',
   addItem: () => {},
   removeItem: () => {},
+  clearCart: () => {},
 };
 
 export function CartContextProvider({ children }: { children: ReactNode }) {
@@ -99,10 +106,15 @@ export function CartContextProvider({ children }: { children: ReactNode }) {
     dispatchCartAction({ type: 'remove-item', item: { id: itemId } });
   }
 
+  function clearCart() {
+    dispatchCartAction({ type: 'clear-cart', item: {} });
+  }
+
   const CartCont = {
     items: cart.items,
     addItem,
     removeItem,
+    clearCart,
   };
 
   return (
